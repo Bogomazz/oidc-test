@@ -10,7 +10,7 @@ const {
   OIDC_REDIRECT_URIS: redirect_uris_str,
   PORT,
 } = process.env
-const redirect_uris = redirect_uris_str?.split(',')
+const redirect_uris = [] // redirect_uris_str?.split(',')
 
 const port = PORT || 8080;
 
@@ -51,16 +51,16 @@ async function init() {
     discovery: {
         "SigningKeys": [],
     },
-    issuer: `http://localhost:${port}/`,
+    issuer: `https://${public_host}:${port}/`,
     jwks,
   }
   console.log(configuration.issuer)
   
-  const oidc = new Provider(`http://0.0.0.0:${port}`, configuration)
+  const oidc = new Provider(`https://${public_host}:${port}`, configuration)
   
   oidc.listen(port, () => {
     console.log(
-      `oidc-provider listening on port ${port}, check http://${public_host}:${port}/.well-known/openid-configuration`,
+      `oidc-provider listening on port ${port}, check https://${public_host}:${port}/.well-known/openid-configuration`,
     )
   })
 }
