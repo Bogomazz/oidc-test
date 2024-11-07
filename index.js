@@ -41,9 +41,15 @@ async function init() {
       },
     ],
     claims: {
-      openid: ['sub'],
-      email: ['email', 'email_verified'],
-      profile: ['name', 'family_name', 'given_name', 'middle_name', 'nickname', 'preferred_username', 'profile', 'picture', 'website', 'gender', 'birthdate', 'zoneinfo', 'locale', 'updated_at'],
+
+      openid: [
+        'sub'
+      ],
+    },
+    scopes: ['openid'],
+    responseTypes: ['id_token'],
+    discovery: {
+        "SigningKeys": [],
     },
     issuer: `http://localhost:${port}/`,
     jwks,
