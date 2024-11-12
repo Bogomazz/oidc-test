@@ -54,7 +54,7 @@ async function init() {
     discovery: {
         "SigningKeys": [],
     },
-    issuer: `https://${public_host}:${port}/`,
+    issuer: `https://${public_host}/`,
     jwks,
   }
 
