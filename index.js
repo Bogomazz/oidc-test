@@ -1,6 +1,9 @@
 import Provider from 'oidc-provider'
 import NodeJose  from 'node-jose'
 import dotenv from 'dotenv'
+import express from 'express'
+
+const app = express()
 
 const {JWK} = NodeJose
 dotenv.config()
@@ -54,11 +57,19 @@ async function init() {
     issuer: `https://${public_host}:${port}/`,
     jwks,
   }
-  console.log(configuration.issuer)
+
+  
   
   const oidc = new Provider(`https://${public_host}:${port}`, configuration)
   
-  oidc.listen(port, () => {
+  app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
+    console.log(req.body);
+    next()
+  }) 
+
+  app.use(oidc.callback())
+  app.listen(port, () => {
     console.log(
       `oidc-provider listening on port ${port}, check https://${public_host}:${port}/.well-known/openid-configuration`,
     )
