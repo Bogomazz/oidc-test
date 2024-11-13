@@ -14,8 +14,8 @@ const {
   PORT,
   NODE_ENV
 } = process.env
-const redirect_uris = []
 
+const redirect_uris = ['https://login.microsoftonline.com/common/federation/externalauthprovider']
 const port = PORT || 8080;
 const DEV = NODE_ENV === 'development'
 const PORT_POSTFIX = DEV ? `:${port}` : ''
@@ -110,6 +110,7 @@ async function init() {
         token_endpoint: ctx.response.body.token_endpoint.replace('http://', 'https://'),
         userinfo_endpoint: ctx.response.body.userinfo_endpoint.replace('http://', 'https://'),
         pushed_authorization_request_endpoint: ctx.response.body.pushed_authorization_request_endpoint.replace('http://', 'https://'),
+        end_session_endpoint: ctx.response.body.end_session_endpoint.replace('http://', 'https://'),
       }
     }
     console.log(ctx.response.body)
