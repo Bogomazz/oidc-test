@@ -12,10 +12,14 @@ const {
   OIDC_CLIENT_ID: client_id, 
   OIDC_REDIRECT_URIS: redirect_uris_str,
   PORT,
+  NODE_ENV
 } = process.env
-const redirect_uris = [] // redirect_uris_str?.split(',')
+const redirect_uris = []
 
 const port = PORT || 8080;
+const DEV = NODE_ENV === 'development'
+const PORT_POSTFIX = DEV ? `:${port}` : ''
+const PROTOCOL = DEV ? 'http' : 'https'
 
 async function generateJWKS() {
   const keystore = JWK.createKeyStore()
@@ -54,13 +58,13 @@ async function init() {
     discovery: {
         "SigningKeys": [],
     },
-    issuer: `https://${public_host}/`,
+    issuer: `${PROTOCOL}://${public_host}${PORT_POSTFIX}/`,
     jwks,
   }
 
   
   
-  const oidc = new Provider(`https://${public_host}:${port}`, configuration)
+  const oidc = new Provider(`${PROTOCOL}://${public_host}${PORT_POSTFIX}/`, configuration)
   oidc.use(async (ctx, next) => {
 
     console.log(new Date().toISOString(), ctx.method, ctx.path)
@@ -98,17 +102,18 @@ async function init() {
      * `token`
      * `userinfo`
      */
-    ctx.response.body = {...ctx.response.body, authorization_endpoint: ctx.response.body.authorization_endpoint.replace('http://', 'https://')}
+    if (ctx.oidc.route === 'discovery') {
+      ctx.response.body = {...ctx.response.body, authorization_endpoint: ctx.response.body.authorization_endpoint.replace('http://', 'https://')}
+    }
     console.log(ctx.response.body)
   })
   
 
   app.use(oidc.callback())
 
-  // app.use()
   app.listen(port, () => {
     console.log(
-      `oidc-provider listening on port ${port}, check https://${public_host}:${port}/.well-known/openid-configuration`,
+      `oidc-provider listening on port ${port}, check ${PROTOCOL}://${public_host}${PORT_POSTFIX}/.well-known/openid-configuration`,
     )
   })
 }
