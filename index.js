@@ -102,14 +102,22 @@ async function init() {
      * `token`
      * `userinfo`
      */
-    if (ctx.oidc?.route === 'discovery') {
-      ctx.response.body = {...ctx.response.body, authorization_endpoint: ctx.response.body.authorization_endpoint.replace('http://', 'https://')}
+    if (ctx.oidc?.route === 'discovery' && !DEV) {
+      ctx.response.body = {
+        ...ctx.response.body, 
+        authorization_endpoint: ctx.response.body.authorization_endpoint.replace('http://', 'https://'),
+        jwks_uri: ctx.response.body.jwks_uri.replace('http://', 'https://'),
+        token_endpoint: ctx.response.body.token_endpoint.replace('http://', 'https://'),
+        userinfo_endpoint: ctx.response.body.userinfo_endpoint.replace('http://', 'https://'),
+        pushed_authorization_request_endpoint: ctx.response.body.pushed_authorization_request_endpoint.replace('http://', 'https://'),
+      }
     }
     console.log(ctx.response.body)
   })
   
 
   app.use(oidc.callback())
+  app.get('/', (req, res) => {res.send("OK")})
 
   app.listen(port, () => {
     console.log(
