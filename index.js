@@ -61,14 +61,51 @@ async function init() {
   
   
   const oidc = new Provider(`https://${public_host}:${port}`, configuration)
+  oidc.use(async (ctx, next) => {
+
+    console.log(new Date().toISOString(), ctx.method, ctx.path)
+    await next()
+    /** post-processing
+     * since internal route matching was already executed you may target a specific action here
+     * checking `ctx.oidc.route`, the unique route names used are
+     *
+     * `authorization`
+     * `backchannel_authentication`
+     * `client_delete`
+     * `client_update`
+     * `client`
+     * `code_verification`
+     * `cors.device_authorization`
+     * `cors.discovery`
+     * `cors.introspection`
+     * `cors.jwks`
+     * `cors.pushed_authorization_request`
+     * `cors.revocation`
+     * `cors.token`
+     * `cors.userinfo`
+     * `device_authorization`
+     * `device_resume`
+     * `discovery`
+     * `end_session_confirm`
+     * `end_session_success`
+     * `end_session`
+     * `introspection`
+     * `jwks`
+     * `pushed_authorization_request`
+     * `registration`
+     * `resume`
+     * `revocation`
+     * `token`
+     * `userinfo`
+     */
+    ctx.response.body = {...ctx.response.body, authorization_endpoint: ctx.response.body.authorization_endpoint.replace('http://', 'https://')}
+    console.log(ctx.response.body)
+  })
   
-  app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
-    console.log(req.body);
-    next()
-  }) 
 
   app.use(oidc.callback())
+
+  // app.use()
   app.listen(port, () => {
     console.log(
       `oidc-provider listening on port ${port}, check https://${public_host}:${port}/.well-known/openid-configuration`,
