@@ -102,7 +102,7 @@ async function init() {
      * `token`
      * `userinfo`
      */
-    if (ctx.oidc.route === 'discovery') {
+    if (ctx.oidc?.route === 'discovery') {
       ctx.response.body = {...ctx.response.body, authorization_endpoint: ctx.response.body.authorization_endpoint.replace('http://', 'https://')}
     }
     console.log(ctx.response.body)
