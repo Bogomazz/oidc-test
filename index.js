@@ -1,18 +1,17 @@
 import Provider from 'oidc-provider'
-import NodeJose  from 'node-jose'
 import dotenv from 'dotenv'
 import express from 'express'
 
 const app = express()
 
-const {JWK} = NodeJose
 dotenv.config()
 const { 
   SDO_PUBLIC_HOST: public_host, 
   OIDC_CLIENT_ID: client_id, 
   OIDC_REDIRECT_URIS: redirect_uris_str,
   PORT,
-  NODE_ENV
+  NODE_ENV,
+  JWKS_KEY
 } = process.env
 
 const redirect_uris = ['https://login.microsoftonline.com/common/federation/externalauthprovider']
@@ -21,19 +20,7 @@ const DEV = NODE_ENV === 'development'
 const PORT_POSTFIX = DEV ? `:${port}` : ''
 const PROTOCOL = DEV ? 'http' : 'https'
 
-async function generateJWKS() {
-  const keystore = JWK.createKeyStore()
-  
-  const key = await keystore.generate('RSA', 2048, { alg: 'RS256', use: 'sig' })
-  
-  return {
-    keys: [key.toJSON(true)]
-  }
-}
-
 async function init() {
-
-  const jwks = await generateJWKS()
 
   const configuration = {
     clients: [
@@ -59,7 +46,9 @@ async function init() {
         "SigningKeys": [],
     },
     issuer: `${PROTOCOL}://${public_host}${PORT_POSTFIX}/`,
-    jwks,
+    jwks: {
+      keys: [JSON.parse(JWKS_KEY)]
+    },
   }
 
   
