@@ -32,6 +32,7 @@ async function init() {
         grant_types: ['implicit'],
         token_endpoint_auth_method: 'none',
         scope: 'openid',
+        jwks_uri: 'https://login.microsoftonline.com/common/discovery/v2.0/keys'
       },
     ],
     claims: {
@@ -47,7 +48,9 @@ async function init() {
     },
     issuer: `${PROTOCOL}://${public_host}${PORT_POSTFIX}/`,
     jwks: {
-      keys: [JSON.parse(JWKS_KEY)]
+      keys: [
+        JSON.parse(JWKS_KEY)
+      ]
     },
   }
 
@@ -55,6 +58,8 @@ async function init() {
   
   const oidc = new Provider(`${PROTOCOL}://${public_host}${PORT_POSTFIX}/`, configuration)
   oidc.use(async (ctx, next) => {
+
+    
 
     console.log(new Date().toISOString(), ctx.method, ctx.path)
     await next()
@@ -91,6 +96,16 @@ async function init() {
      * `token`
      * `userinfo`
      */
+
+    if (ctx.oidc?.route === 'authorization') {
+      try {
+        ctx.oidc.provider.IdToken.validate(ctx.oidc.params.id_token_hint, ctx.oidc.client)
+
+      } catch (error) {
+        throw error
+      }
+    }
+
     if (ctx.oidc?.route === 'discovery' && !DEV) {
       ctx.response.body = {
         ...ctx.response.body, 
