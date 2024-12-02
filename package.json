@@ -2,6 +2,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
     "node-jose": "^2.2.0",
     "oidc-provider": "^8.5.3"
   },
