@@ -23,9 +23,6 @@ function generateToken(payload, key, expiresIn) {
   return jwt.sign(payload, key, {
     algorithm: 'RS256',
     expiresIn: expiresIn,
-    header: {
-      kid,
-    },
   });
 }
 
