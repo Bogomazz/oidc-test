@@ -73,7 +73,10 @@ async function initApp() {
     const { kid: idTokenHintKID } = decodedIdTokenHint.header;
 
     const key = keys.find(key => key.kid === idTokenHintKID);
-    const pKey = (await asKey(key)).toPEM();
+    const pKey = {
+      key,
+      format: 'jwk'
+    }
 
     let decoded;
     try {
