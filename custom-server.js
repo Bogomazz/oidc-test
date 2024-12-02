@@ -19,7 +19,7 @@ const JWK = JWKS_KEY ? JSON.parse(JWKS_KEY) : null;
 console.log('jwks: -------------------');
 console.log(JWK);
 
-function generateToken(payload, key, kid, expiresIn) {
+function generateToken(payload, key, expiresIn) {
   return jwt.sign(payload, key, {
     algorithm: 'RS256',
     expiresIn: expiresIn,
