@@ -13,7 +13,7 @@ const {
   SDO_PUBLIC_HOST: host,
   JWKS_KEY,
 } = process.env;
-
+const WHITELISTED_KEYS = ['kty', 'kid', 'use', 'alg', 'e', 'n']
 const JWK = JWKS_KEY ? JSON.parse(JWKS_KEY) : null;
 
 console.log('jwks: -------------------');
@@ -131,8 +131,16 @@ async function initApp() {
 
   // JWKs endpoint
   app.get('/jwks', (req, res) => {
+    const publicKey = Object
+      .entries(JWK)
+      .filter(([key]) => WHITELISTED_KEYS.includes(key))
+      .reduce((publicObj, [key, value]) => ({
+        ...publicObj,
+        [key]: value 
+      }), {})
+    
     res.json({
-      keys: [JWK]
+      keys: [publicKey]
     });
   });
 
