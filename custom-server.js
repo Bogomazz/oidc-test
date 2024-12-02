@@ -131,7 +131,9 @@ async function initApp() {
 
   // JWKs endpoint
   app.get('/jwks', (req, res) => {
-    res.json(JWK);
+    res.json({
+      keys: [JWK]
+    });
   });
 
   // Userinfo endpoint
