@@ -19,12 +19,12 @@ const JWK = JWKS_KEY ? JSON.parse(JWKS_KEY) : null;
 console.log('jwks: -------------------');
 console.log(JWK);
 
-function generateToken(payload, key, expiresIn) {
-  return jwt.sign(payload, key, {
+function generateToken(payload, keyObj, expiresIn) {
+  return jwt.sign(payload, keyObj, {
     algorithm: 'RS256',
     expiresIn: expiresIn,
     header: {
-      kid: key.kid
+      kid: keyObj.key.kid
     }
   });
 }
@@ -119,6 +119,8 @@ async function initApp() {
       preferred_username: username,
       iss: `https://${process.env.SDO_PUBLIC_HOST}`,
     }, privateKey, '1h');
+
+    console.log('id token: ', idToken)
     
     res.send(`
       <form method="POST" action="${redirect_uri}">
