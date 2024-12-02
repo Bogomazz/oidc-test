@@ -13,7 +13,7 @@ const {
   SDO_PUBLIC_HOST: host,
   JWKS_KEY,
 } = process.env;
-const WHITELISTED_KEYS = ['kty', 'kid', 'use', 'alg', 'e', 'n']
+const WHITELISTED_KEYS = ['kty', 'kid', 'use', 'alg', 'e', 'n', 'x5c']
 const JWK = JWKS_KEY ? JSON.parse(JWKS_KEY) : null;
 
 console.log('jwks: -------------------');
