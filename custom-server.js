@@ -124,10 +124,8 @@ async function initApp() {
     
     res.send(`
       <form method="POST" action="${redirect_uri}">
-        <input type="hidden" name="client_id" value="${client_id}" />
         <input type="hidden" name="state" value="${state}" />
         <input type="hidden" name="id_token" value="${idToken}" />
-        <input type="hidden" name="iss" value="https://${process.env.SDO_PUBLIC_HOST}" />
         <button type="submit" style="border-radius: 15px; background-color: cyan;">Login</button>
       </form>
     `);
