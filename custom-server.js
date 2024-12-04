@@ -114,7 +114,7 @@ async function initApp() {
       sub: sub,
       aud: client_id,
       nonce: nonce,
-      amr: ['fido', 'sms', 'hwk', 'pop', 'vbm', 'bio', 'fpt', 'sc', 'iris', 'face', 'tel', 'retina', 'swk', 'otp'],
+      amr: ['face'],
       acr: 'possessionorinherence',
       preferred_username: username,
       iss: `https://${process.env.SDO_PUBLIC_HOST}`,
