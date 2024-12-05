@@ -116,7 +116,7 @@ async function initApp() {
       nonce: nonce,
       amr: ['face'],
       acr: 'possessionorinherence',
-      preferred_username: username,
+      // preferred_username: username,
       iss: `https://${process.env.SDO_PUBLIC_HOST}`,
     }, privateKey, '1h');
 
