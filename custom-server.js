@@ -69,9 +69,10 @@ async function initApp() {
 
     const { keys } = await fetch(msKeysUrl).then(res => res.json());
 
+    console.log('Id token hint', id_token_hint)
     const decodedIdTokenHint = jwt.decode(id_token_hint, { complete: true });
     const { kid: idTokenHintKID } = decodedIdTokenHint.header;
-
+    console.log('decoded id token hint', decodedIdTokenHint)
     const key = keys.find(key => key.kid === idTokenHintKID);
     const pKey = {
       key,
